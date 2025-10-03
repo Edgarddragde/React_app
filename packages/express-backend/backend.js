@@ -34,6 +34,11 @@ const users = {
     ]
 };
 
+const addUser = (user) => {
+    users["users_list"].push(user);
+    return user;
+};
+
 const findUserByName = (name) => {
     return users["users_list"].filter(
 	(user) => user["name"] === name
@@ -69,6 +74,16 @@ app.get("/users/:id", (req, res) => {
 	res.send(result);
     }
 });
+
+app.post("/users", (req, res) => {
+    console.log("Content-Type:", req.headers["content-type"]);
+    console.log("Body:", req.body);
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.send();
+
+});
+
 
 
 app.listen(port, () => {
