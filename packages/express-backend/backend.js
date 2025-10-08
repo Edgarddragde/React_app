@@ -1,6 +1,6 @@
 // backend.js
 import express from "express";
-
+import cors from "cors";
 
 const app = express()
 const port = 8000;
@@ -50,7 +50,7 @@ const findUserByJob = (job) =>
     users["users_list"].filter((user) => user["job"] === job); 
 const findUserById = (id) => 
     users["users_list"].find((user) => user["id"] === id);
-
+app.use(cors())
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -78,7 +78,7 @@ app.get("/users/:id", (req, res) => {
     }
 });
 
-app.get("/users/name/:name", (req, res) => {
+app.get("/users/name/gi:name", (req, res) => {
     const user = req.params["name"]; //or req.params.id
     let result = findUserByName(user);
     if ( result === undefined ) {
