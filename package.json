@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:client": "vite",
+    "dev:server": "npx nodemon ./packages/express-backend/backend.js",
+    "build": "vite build",
+    "start": "node backend.js"
   },
   "author": "",
   "license": "ISC",

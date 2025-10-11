@@ -1,5 +1,5 @@
 // backend.js
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 
 const app = express()
@@ -34,6 +34,9 @@ const users = {
     ]
 };
 
+const IdGenerator = ( () => {
+	return Math.floor(Math.random() * 100).toString();
+});
 
     
 const addUser = (user) => {
@@ -68,7 +71,7 @@ app.get("/users", (req, res) => {
     }
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/id/:id", (req, res) => {
     const id = req.params["id"]; //or req.params.id
     let result = findUserById(id);
     if ( result === undefined ) {
@@ -78,7 +81,7 @@ app.get("/users/:id", (req, res) => {
     }
 });
 
-app.get("/users/name/gi:name", (req, res) => {
+app.get("/users/name/:name", (req, res) => {
     const user = req.params["name"]; //or req.params.id
     let result = findUserByName(user);
     if ( result === undefined ) {
@@ -102,20 +105,34 @@ app.delete("/users/id/:id", (req, res) => {
 	const id = req.params["id"];
 	const index = users["users_list"].findIndex((user) => user["id"] == id)
 	if (index == -1) {
-		res.status(401)
-	} else {
-		users["users_list"].splice(index, 1)
-		res.status(200)
-
+		res.status(404)
 	}
+	users["users_list"].splice(index, 1)
+	res.send(204)
 })
 
-app.post("/users/name/:name", (req, res) => {
+app.delete("/users/index/:index", (req, res) => {
+	const index = Number(req.params.index);
+	if (!Number.isInteger(index) || index < 0 || index >= users.users_list.length) {
+		return res.status(404)
+	}
+
+	users["users_list"].splice(index, 1)
+	return res.send(204)
+})
+
+app.post("/users", (req, res) => {
     console.log("Content-Type:", req.headers["content-type"]);
-    console.log("Body:", req.body);
-    const userToAdd = req.body;
-    addUser(userToAdd);
-    res.send();
+	const id = IdGenerator()
+	// using .some returns boolean
+	while (users.users_list.some(user => user.id === id)) {
+		console.log("ID already in system")
+		id = IdGenerator()
+	}
+    const userToAdd = {id: IdGenerator(), ...req.body};
+	console.log("Sending:", userToAdd)
+	addUser(userToAdd);
+    res.status(201).json(userToAdd);
 
 });
 

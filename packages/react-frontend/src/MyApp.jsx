@@ -19,7 +19,6 @@ function MyApp() {
       },
       body: JSON.stringify(person),
     })
-
     return promise;
   }
 
@@ -31,10 +30,10 @@ function MyApp() {
   }, [] );
   
   function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-    return i !== index;
-    });
-    setCharacters(updated);
+    const promise = fetch(`http://localhost:8000/users/index/${index}`, {
+      method: "DELETE"
+    })
+    return promise;
   }
 
   function updateList(person) {
